@@ -1,5 +1,6 @@
 import React from 'react'
 import StockTransaction from "./StockTransaction"
+import { Logger } from 'aws-amplify';
 
 class MyStockPortfolio extends React.Component{
 	
@@ -32,7 +33,7 @@ class MyStockPortfolio extends React.Component{
 	}
 	
 	componentDidMount(){
-		console.log("start componentDidMount")
+		logger.info("start componentDidMount")
 		fetch(this.apiurl+'/users/12345',{method:'GET'})
 		.then(response => response.json())
 		.then(response => {
@@ -54,11 +55,11 @@ class MyStockPortfolio extends React.Component{
 			this.setState({allStocks:res})
 			}).catch(console.log)
 			
-		console.log("end componentDidMount")
+		logger.info("end componentDidMount")
 	}
 	
 	handleAddCash(event){
-		console.log("start handleAddCash")
+		logger.info("start handleAddCash")
 		const {name,value}=event.target
 		this.setState({[name]:value})
 		fetch(this.apiurl+'/transactions/'+this.state.userId,{
@@ -74,11 +75,11 @@ class MyStockPortfolio extends React.Component{
 				"transactionType":"Cr."
 			  })
 		})
-		console.log("end handleAddCash")	
+		logger.info("end handleAddCash")	
 	}
 	
 	buyStock(event){
-		console.log("start buyStock")
+		logger.info("start buyStock")
 		const {name,value}=event.target
 		this.setState({[name]:value})
 		fetch(this.apiurl+'/transact/buy',{
@@ -94,13 +95,13 @@ class MyStockPortfolio extends React.Component{
 				"eachSharePurchaseValue":10000
 			  })
 		})
-		console.log("buyStock numOfShares:"+this.state.stockMarket[0].numOfShares)
-		console.log("buyStock stockValue:"+this.state.stockMarket[0].stockValue)
-		console.log("end buyStock")
+		logger.info("buyStock numOfShares:"+this.state.stockMarket[0].numOfShares)
+		logger.info("buyStock stockValue:"+this.state.stockMarket[0].stockValue)
+		logger.info("end buyStock")
 	}
 	
 	sellStock(event){
-		console.log("start sellStock")
+		logger.info("start sellStock")
 		const {name,value}=event.target
 		this.setState({[name]:value})
 		fetch({origin:this.apiurl+'/transact/sell',cors: true},{
@@ -118,23 +119,23 @@ class MyStockPortfolio extends React.Component{
 				"eachSharePurchaseValue":10000
 			  })
 		})
-		console.log("sellStock numOfShares:"+this.state.numOfShares)
-		console.log("end sellStock")
+		logger.info("sellStock numOfShares:"+this.state.numOfShares)
+		logger.info("end sellStock")
 	}
 	
 	setStockTransParams(event){
-		console.log("start setStockTransParams")
+		logger.info("start setStockTransParams")
 		const {name,value}=event.target
 		this.setState({[name]:value})
 		
-		console.log("end setStockTransParams")
+		logger.info("end setStockTransParams")
 	}
 	
 	refreshUserDetails(event){
-		console.log("start refreshUserDetails")
+		logger.info("start refreshUserDetails")
 		const {name,value}=event.target
 		this.setState({[name]:value})
-		console.log("end refreshUserDetails")
+		logger.info("end refreshUserDetails")
 	}
 	
 	render(){
