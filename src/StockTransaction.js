@@ -2,14 +2,16 @@ import React from 'react'
 
 
 function StockTransaction(prop){
-	return (<div>
+	return (
 		<tr>
-		<th>{prop.stock.companyName}</th>&nbsp;&nbsp;&nbsp;
-		<th>{prop.stock.high}</th>&nbsp;&nbsp;&nbsp;
-		<th><input type="text" placeholder="Enter number of shares" name="numOfShares" value={prop.stock.numOfShares} onChange={prop.stock.setStockTransParams}/></th>&nbsp;&nbsp;&nbsp;
-		<th><button onClick={prop.stock.buyStock}>Buy</button>&nbsp;&nbsp;&nbsp;<button onClick={prop.stock.sellStock}>Sell</button></th>
-		</tr>
-	</div>)
+			<th>{prop.allStocks.map((item,index)=>(<tr><output name="companyName" id={prop.stockDetails.id=index} value={prop.stockDetails.companyName=item.companyName}>{item.companyName}</output></tr>))}</th>&nbsp;&nbsp;&nbsp;
+			<th>{prop.allStocks.map((item,index)=>(<tr><output name="stockValue" id={prop.stockDetails.id=index} value={prop.stockDetails.stockValue=item.high}>{item.high}</output></tr>))}</th>&nbsp;&nbsp;&nbsp;
+			<th>{prop.allStocks.map((item,index)=>(<tr><input type="text" id={prop.stockDetails.id=index} placeholder="Enter number of shares" name="numOfShares" value={prop.stockDetails.numOfShares=item.numOfShares} onChange={prop.setStockTransParams}/></tr>))}</th>&nbsp;&nbsp;&nbsp;
+			<th>{prop.allStocks.map((item,index)=>(<tr><input type="text" id={prop.stockDetails.id=index} placeholder="Enter number of shares" name="numOfShares" value={prop.stockDetails.numOfShares=item.numOfShares} onChange={prop.setStockTransParams2}/></tr>))}</th>&nbsp;&nbsp;&nbsp;
+			<th>{prop.allStocks.map((item,index)=>(<tr><button onClick={prop.buyStock}>Buy</button>&nbsp;&nbsp;&nbsp;<button onClick={prop.sellStock}>Sell</button></tr>))}</th>&nbsp;&nbsp;&nbsp;
+			
+		</tr>)
+	
 }
 
 export default StockTransaction

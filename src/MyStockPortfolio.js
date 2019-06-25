@@ -1,6 +1,5 @@
 import React from 'react'
 import StockTransaction from "./StockTransaction"
-import { Logger } from 'aws-amplify';
 
 class MyStockPortfolio extends React.Component{
 	
@@ -15,25 +14,34 @@ class MyStockPortfolio extends React.Component{
 			listOfCashTransactions:[],
 			allStocks:[],
 			cashAmount:"",
+			stockMarket:[{
+			id:"",
 			companyName:"",
 			currentPricePerShare:"",
-			stockMarket:[
-			{numOfShares:"",
+			numOfShares:"",
+			stockValue:""
+			}],
+			compName:"",
+			numOfShares:"",
 			stockValue:""
 			}
-			]
-			}
+		
+			
+			
 		this.awsapiurl = "";
-		this.apiurl = "http://mystockportfolio.us-east-2.elasticbeanstalk.com";//"http://localhost:8080";
+		this.apiurl = "http://localhost:8080";//""; http://mystockportfolio.us-east-2.elasticbeanstalk.com
 		this.handleAddCash = this.handleAddCash.bind(this)	
 		this.refreshUserDetails = this.refreshUserDetails.bind(this)	
 		this.buyStock = this.buyStock.bind(this)	
 		this.sellStock = this.sellStock.bind(this)	
 		this.setStockTransParams = this.setStockTransParams.bind(this)
+		this.purchaseStock = this.purchaseStock.bind(this)
+		this.setStockTransParams2 = this.setStockTransParams2.bind(this)
+		this.saleStock = this.saleStock.bind(this)
 	}
 	
 	componentDidMount(){
-		logger.info("start componentDidMount")
+		console.log("start componentDidMount")
 		fetch(this.apiurl+'/users/12345',{method:'GET'})
 		.then(response => response.json())
 		.then(response => {
@@ -55,11 +63,11 @@ class MyStockPortfolio extends React.Component{
 			this.setState({allStocks:res})
 			}).catch(console.log)
 			
-		logger.info("end componentDidMount")
+		console.log("end componentDidMount")
 	}
 	
 	handleAddCash(event){
-		logger.info("start handleAddCash")
+		console.log("start handleAddCash")
 		const {name,value}=event.target
 		this.setState({[name]:value})
 		fetch(this.apiurl+'/transactions/'+this.state.userId,{
@@ -75,11 +83,11 @@ class MyStockPortfolio extends React.Component{
 				"transactionType":"Cr."
 			  })
 		})
-		logger.info("end handleAddCash")	
+		console.log("end handleAddCash")	
 	}
 	
 	buyStock(event){
-		logger.info("start buyStock")
+		console.log("start buyStock")
 		const {name,value}=event.target
 		this.setState({[name]:value})
 		fetch(this.apiurl+'/transact/buy',{
@@ -90,52 +98,142 @@ class MyStockPortfolio extends React.Component{
 			  },
 			  body: JSON.stringify({
 				"userId":this.state.userId,
-				"companyName":"MSFT",
-				"numOfShares":100,
-				"eachSharePurchaseValue":10000
+				"companyName":this.state.companyName,
+				"numOfShares":this.state.numOfShares,
+				"eachSharePurchaseValue":this.state.stockValue
 			  })
 		})
-		logger.info("buyStock numOfShares:"+this.state.stockMarket[0].numOfShares)
-		logger.info("buyStock stockValue:"+this.state.stockMarket[0].stockValue)
-		logger.info("end buyStock")
+		//this.refreshUserDetails(event)
+		console.log("buyStock id:"+this.state.stockMarket[0].id)
+		console.log("buyStock companyName:"+this.state.stockMarket[0].companyName)
+		console.log("buyStock numOfShares:"+this.state.stockMarket[0].numOfShares)
+		console.log("buyStock stockValue:"+this.state.stockMarket[0].stockValue)
+		console.log("end buyStock")
 	}
 	
 	sellStock(event){
-		logger.info("start sellStock")
+		console.log("start sellStock")
 		const {name,value}=event.target
 		this.setState({[name]:value})
-		fetch({origin:this.apiurl+'/transact/sell',cors: true},{
+		fetch(this.apiurl+'/transact/sell',{
+			  method: 'POST',
+			  headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			  },
+			  body: JSON.stringify({
+				"userId":this.state.userId,
+				"companyName":this.state.companyName,
+				"numOfShares":this.state.numOfShares,
+				"eachSharePurchaseValue":this.state.stockValue
+			  })
+		})
+		//this.refreshUserDetails(event)
+		console.log("sellStock id:"+this.stockMarket.id)
+		console.log("sellStock companyName:"+this.stockMarket.companyName)
+		console.log("sellStock numOfShares:"+this.stockMarket.numOfShares)
+		console.log("sellStock stockValue:"+this.stockMarket.stockValue)
+		console.log("end sellStock")
+	}
+	saleStock(stockMarkets){
+		console.log("start saleStock")
+		
+		fetch(this.apiurl+'/transact/sell',{
+			  method: 'POST',
+			  headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			  },
+			  body: JSON.stringify({
+				"userId":this.state.userId,
+				"companyName":stockMarkets.companyName,
+				"numOfShares":stockMarkets.numOfShares,
+				"eachSharePurchaseValue":stockMarkets.stockValue
+			  })
+		})
+		//this.refreshUserDetails(event)
+		console.log("saleStock id:"+stockMarkets.id)
+		console.log("saleStock companyName:"+stockMarkets.companyName)
+		console.log("saleStock numOfShares:"+stockMarkets.numOfShares)
+		console.log("saleStock stockValue:"+stockMarkets.stockValue)
+		console.log("end saleStock")
+	}
+	purchaseStock(stockMarkets){
+		console.log("start purchaseStock")
+		
+		fetch(this.apiurl+'/transact/buy',{
 			  method: 'POST',
 			  headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*' ,
-			    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE'
 			  },
 			  body: JSON.stringify({
 				"userId":this.state.userId,
-				"companyName":"MSFT",
-				"numOfShares":20,
-				"eachSharePurchaseValue":10000
+				"companyName":stockMarkets.companyName,
+				"numOfShares":stockMarkets.numOfShares,
+				"eachSharePurchaseValue":stockMarkets.stockValue
 			  })
 		})
-		logger.info("sellStock numOfShares:"+this.state.numOfShares)
-		logger.info("end sellStock")
+		//this.refreshUserDetails(event)
+		console.log("purchaseStock id:"+stockMarkets.id)
+		console.log("purchaseStock companyName:"+stockMarkets.companyName)
+		console.log("purchaseStock numOfShares:"+stockMarkets.numOfShares)
+		console.log("purchaseStock stockValue:"+stockMarkets.stockValue)
+		console.log("end purchaseStock")
 	}
 	
 	setStockTransParams(event){
-		logger.info("start setStockTransParams")
+		console.log("start setStockTransParams")
 		const {name,value}=event.target
-		this.setState({[name]:value})
+		//this.setState({[name]:value})
+		console.log("index:"+event.target.id+" "+event.target.value)
+		var stockMarkets = {id:event.target.id,
+			companyName:this.state.allStocks[event.target.id].companyName,
+			numOfShares:event.target.value,
+			stockValue:this.state.allStocks[event.target.id].high}
 		
-		logger.info("end setStockTransParams")
+		console.log("id:"+stockMarkets.id)
+		console.log("numOfShares:"+stockMarkets.numOfShares)
+		console.log("stockValue:"+stockMarkets.stockValue)
+		this.purchaseStock(stockMarkets);	
+		this.refreshUserDetails(event);
+		//this.setState(prevstate => {prevstate.stockMarket.map( item=> {if(item.id=stockMarkets.id) {return stockMarkets}}) })
+		//this.setState({[name]:value}) //stockMarket[event.target.id]=stockMarket,
+		//console.log("numOfShares2:"+this.state.stockMarket[stockMarkets.id].numOfShares)
+		//var allStocks[event.target.id].numOfShares=event.target.value
+		//this.setState({allStocks:allStocks})
+		console.log("name:"+name+","+value)
+		console.log("end setStockTransParams")
+	}
+	setStockTransParams2(event){
+		console.log("start setStockTransParams2")
+		const {name,value}=event.target
+		//this.setState({[name]:value})
+		console.log("index:"+event.target.id+" "+event.target.value)
+		var stockMarkets = {id:event.target.id,
+			companyName:this.state.allStocks[event.target.id].companyName,
+			numOfShares:event.target.value,
+			stockValue:this.state.allStocks[event.target.id].high}
+		
+		console.log("id:"+stockMarkets.id)
+		console.log("numOfShares:"+stockMarkets.numOfShares)
+		console.log("stockValue:"+stockMarkets.stockValue)
+		this.saleStock(stockMarkets);	
+		this.refreshUserDetails(event);
+		//this.setState(prevstate => {prevstate.stockMarket.map( item=> {if(item.id=stockMarkets.id) {return stockMarkets}}) })
+		//this.setState({[name]:value}) //stockMarket[event.target.id]=stockMarket,
+		//console.log("numOfShares2:"+this.state.stockMarket[stockMarkets.id].numOfShares)
+		//var allStocks[event.target.id].numOfShares=event.target.value
+		//this.setState({allStocks:allStocks})
+		console.log("name:"+name+","+value)
+		console.log("end setStockTransParams2")
 	}
 	
 	refreshUserDetails(event){
-		logger.info("start refreshUserDetails")
+		console.log("start refreshUserDetails")
 		const {name,value}=event.target
 		this.setState({[name]:value})
-		logger.info("end refreshUserDetails")
+		console.log("end refreshUserDetails")
 	}
 	
 	render(){
@@ -186,15 +284,11 @@ class MyStockPortfolio extends React.Component{
 					<tr>
 						<th>Company Name</th>&nbsp;&nbsp;&nbsp;
 						<th>Current price per share</th>&nbsp;&nbsp;&nbsp;
-						<th>Num. of Shares </th>&nbsp;&nbsp;&nbsp;
+						<th>Num. of Shares To Buy</th>&nbsp;&nbsp;&nbsp;
+						<th>Num. of Shares To Sell</th>&nbsp;&nbsp;&nbsp;
 						<th>Buy/Sell</th>
 					</tr>
-					<tr>
-						<th>{this.state.allStocks.map(item=>(<tr>{item.companyName}</tr>))}</th>&nbsp;&nbsp;&nbsp;
-						<th>{this.state.allStocks.map(item=>(<tr><output name="stockValue" value={this.state.stockMarket.stockValue=item.high}>{item.high}</output></tr>))}</th>&nbsp;&nbsp;&nbsp;
-						<th>{this.state.allStocks.map(item=>(<tr><input type="text" placeholder="Enter number of shares" name="numOfShares" value={this.state.stockMarket.numOfShares} onChange={this.setStockTransParams}/></tr>))}</th>&nbsp;&nbsp;&nbsp;
-						<th>{this.state.allStocks.map(item=>(<tr><button onClick={this.buyStock}>Buy</button>&nbsp;&nbsp;&nbsp;<button onClick={this.sellStock}>Sell</button></tr>))}</th>&nbsp;&nbsp;&nbsp;
-					</tr>
+					<StockTransaction allStocks={this.state.allStocks} stockDetails={this.state.stockMarket} setStockTransParams={this.setStockTransParams} setStockTransParams2={this.setStockTransParams2} buyStock={this.buyStock} sellStock={this.sellStock}/>
 					</table>
 					</div>
 					
