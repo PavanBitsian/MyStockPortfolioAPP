@@ -29,7 +29,7 @@ class MyStockPortfolio extends React.Component{
 			
 			
 		this.awsapiurl = "";
-		this.apiurl = "http://localhost:8080";//""; http://mystockportfolio.us-east-2.elasticbeanstalk.com
+		this.apiurl = "http://mystockportfolio.us-east-2.elasticbeanstalk.com";//"http://localhost:8080"; 
 		this.handleAddCash = this.handleAddCash.bind(this)	
 		this.refreshUserDetails = this.refreshUserDetails.bind(this)	
 		this.buyStock = this.buyStock.bind(this)	
